@@ -1,0 +1,83 @@
+.decor {
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.left-fly div {
+  &:nth-child(n) {
+    position: fixed;
+  }
+
+  &:nth-child(1) {
+    top: 8.3vh;
+    right: 39vw;
+  }
+
+  &:nth-child(2) {
+    top: 70vh;
+    right: 77vw;
+  }
+
+  &:nth-child(3) {
+    top: 6vh;
+    right: 6vw;
+  }
+
+  &:nth-child(4) {
+    top: 92vh;
+    right: 46vw;
+  }
+}
+
+.right-fly div {
+  &:nth-child(n) {
+    position: fixed;
+  }
+
+  &:nth-child(1) {
+    top: 19vh;
+    right: 13vw;
+  }
+
+  &:nth-child(2) {
+    top: 35vh;
+    right: 89vw;
+  }
+
+  &:nth-child(3) {
+    top: 76vh;
+    right: 59vw;
+  }
+
+  &:nth-child(4) {
+    top: 86vh;
+    right: 90vw;
+  }
+}
+
+.up-fly div {
+  &:nth-child(n) {
+    position: fixed;
+  }
+
+  &:nth-child(1) {
+    top: 4vh;
+    right: 26vw;
+  }
+
+  &:nth-child(2) {
+    top: 36vh;
+    right: 3vw;
+  }
+
+  &:nth-child(3) {
+    top: 59vh;
+    right: 92vw;
+  }
+
+  &:nth-child(4) {
+    top: 90vh;
+    right: 70vw;
+  }
+}

@@ -1,0 +1,63 @@
+<div class="wrapper">
+<div class="room" [ngClass]="{received: received}">
+  <div class="room__description">
+    <div class="room__name">
+      <h1 *ngIf="received">
+        {{ room.name }}
+      </h1>
+    </div>
+    <div class="room__state" [ngClass]="{busy: busy}">
+      <div *ngIf="received" class="room__status" @opacity>
+        {{ busy ? 'Занято' : 'Свободно' }}
+      </div>
+      <div *ngIf="busy" class="about" @opacity>
+        <div class="about__name">
+          {{ meeting.name }}
+        </div>
+        <div class="about__phone">
+          {{ meeting.phone }}
+        </div>
+        <div class="about__time">
+          {{ meeting.start }}-{{ meeting.end }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="room__calendar calendar">
+    <div class="calendar__wrapper">
+      <div class="calendar__days days">
+        <div class="days__day day" *ngFor="let dayName of daysNames; let i = index">
+          <div @opacity class="day__name">{{dayName}}</div>
+          <button
+            class="day__date"
+            [ngClass]="{today: states[i] === 'today', previous: states[i] === 'previous', future: states[i] === 'future', selected: i == selected}"
+            (click)="changeMeetings(i)"
+          >
+            <div *ngIf="received" @opacity>
+              {{ days[i].getDate() }}
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div class="calendar__meetings">
+        <app-meeting
+          [meetings]="meetings"
+          [state]="states[selected]"
+          (onBusy)="updateRoomState($event)"
+        ></app-meeting>
+      </div>
+    </div>
+    <div @opacity class="decor decor__1">
+      <img src="assets/img/decor/1.svg" alt="">
+    </div>
+    <div @opacity class="decor decor__2">
+      <img src="assets/img/decor/7.svg" alt="">
+    </div>
+    <div @opacity class="decor decor__3">
+      <img src="assets/img/decor/3.svg" alt="">
+    </div>
+  </div>
+</div>
+</div>

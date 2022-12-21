@@ -1,0 +1,13 @@
+<div
+  class="meet"
+  *ngFor="let meeting of meetings; let i = index"
+  [ngClass]="{previous: 'previous' === states[i], now: 'now' === states[i], future: 'future' === states[i]}"
+  @opacity
+>
+  <div class="meet__owner">
+    {{ meeting.name }}
+  </div>
+  <div class="meet__time">
+    {{ meeting.start.substring(0, 2) }}<span class="normal">:</span>{{ meeting.start.substring(3, 5) }}<span class="normal">-</span>{{ meeting.end.substring(0, 2) }}<span class="normal">:</span>{{ meeting.end.substring(3, 5) }}
+  </div>
+</div>

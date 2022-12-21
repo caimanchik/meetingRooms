@@ -1,0 +1,44 @@
+.meet {
+  display: flex;
+  justify-content: space-between;
+  background: transparent;
+  align-items: center;
+  font-size: 1.14rem;
+  line-height: 1.05;
+  padding: 4.5px 4.5px 4px;
+  margin-bottom: 4px;
+
+  &__owner {
+    padding-left: 3px;
+    background: transparent;
+    font-weight: 250;
+  }
+
+  &__time {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    font-family: 'Courier Prime', monospace;
+    padding-right: 3px;
+    letter-spacing: -0.05em;
+    position: relative;
+    top: 2px;
+  }
+
+  &.previous {
+    color: #7E7E7E;
+  }
+
+  &.now {
+    background: linear-gradient(270deg, #E0004D 0%, rgba(224, 0, 77, 0) 100%), #FF7500;
+    color: white;
+    border-radius: 11px;
+  }
+}
+
+.normal {
+  position: relative;
+  top: -2px;
+  font-family: 'Muller', sans-serif;
+  background: transparent;
+}

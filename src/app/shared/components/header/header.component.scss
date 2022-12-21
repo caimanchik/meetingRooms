@@ -1,0 +1,43 @@
+.header {
+  position: fixed;
+  left: 50px;
+  top: 50px;
+  &__logo {
+  }
+}
+
+.logo {
+  text-transform: uppercase;
+  font-size: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  &__arrows {
+    width: 18px;
+    height: 33px;
+    margin: 0 4px;
+  }
+}
+
+.arrows {
+  display: inline-block;
+  position: relative;
+  &__left, &__right{
+    position: absolute;
+    width: 13px;
+    height: 21px;
+    transition: all ease .5s;
+  }
+
+  &__left{
+    bottom: 0;
+    left: 0;
+    background: url("~src/assets/img/header/left-arrow.svg") no-repeat;
+  }
+
+  &__right{
+    top: 0;
+    right: 0;
+    background: url("~src/assets/img/header/right-arrow.svg") no-repeat;
+  }
+}

@@ -1,0 +1,13 @@
+@import "app/nullStyle";
+@import "assets/fonts/fonts";
+
+* {
+  font-family: 'Muller', sans-serif;
+  background-color: #fff;
+}
+
+.bg-gr-red {
+  background: linear-gradient(270deg, #E0004D 0%, rgba(224, 0, 77, 0) 50%, #FFC600 100%), #FF7500;
+}
+
+

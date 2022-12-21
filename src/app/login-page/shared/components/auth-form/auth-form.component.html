@@ -1,0 +1,56 @@
+<form class="content__form form" [formGroup]="form" (ngSubmit)="submit()">
+
+  <div class="form__control form-control">
+
+    <div class="form-control__label label">
+      <div class="label__wrapper">
+        <label
+          for="login"
+          class="label__label"
+        >Логин</label>
+      </div>
+    </div>
+
+    <div class="form-control__input input">
+      <input
+        formControlName="email"
+        type="text"
+        class="input__input"
+        id="login"
+        [ngClass]="{invalid: form.get('email')?.touched && form.get('email')?.invalid || errorEmail}"
+      >
+    </div>
+
+  </div>
+
+  <div class="form__control form-control">
+
+    <div class="form-control__label label">
+      <div class="label__wrapper">
+        <label
+          for="password"
+          class="label__label"
+        >Пароль</label>
+      </div>
+    </div>
+
+    <div class="form-control__input input">
+      <input
+        formControlName="password"
+        [type]="visible ? 'text' : 'password'"
+        class="input__input"
+        id="password"
+        [ngClass]="{invalid: form.get('password')?.touched && form.get('password')?.invalid || errorPass}"
+      >
+      <div class="input__pass" (click)="visible = !visible">
+        <img class="switcher" @pass [ngClass]="{visible: visible}" src="assets/img/form/visible.svg" alt="">
+        <img class="switcher" @pass [ngClass]="{visible: !visible}" src="assets/img/form/notvisible.svg" alt="">
+      </div>
+    </div>
+
+  </div>
+
+
+  <button type="submit" class="form__btn">Вход</button>
+
+</form>

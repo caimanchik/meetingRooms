@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&family=Inconsolata&display=swap');
+
+@font-face {
+  font-family: 'Muller';
+  font-weight: 400;
+  font-style: normal;
+
+  src:
+    url("MullerRegular.woff2") format("woff2"),
+    url("MullerRegular.woff") format("woff")
+}
+
+@font-face {
+  font-family: 'Muller';
+  font-weight: 700;
+  font-style: normal;
+
+  src:
+    url("MullerBold.woff2") format("woff2"),
+    url("MullerBold.woff") format("woff")
+}
+
+@font-face {
+  font-family: 'Muller';
+  font-weight: 200;
+  font-style: normal;
+
+  src:
+    url("MullerUltraLight.woff2") format("woff2"),
+    url("MullerUltraLight.woff") format("woff")
+}
