@@ -32,6 +32,7 @@ export class MeetingRoomPageComponent implements OnInit {
   selected!: number
   busy: boolean = false
   meeting!: Meeting
+  opened = false
 
   constructor(
     private meetService: MeetingService,
@@ -106,6 +107,13 @@ export class MeetingRoomPageComponent implements OnInit {
 
   selectRoom($event: MouseEvent) {
     $event.preventDefault()
+
+    if (!this.opened)
+    {
+      this.opened = true
+      return
+    }
+
     let prev: Element
     let links = document.querySelectorAll('.name__link')
     links.forEach((e) => {
@@ -113,10 +121,14 @@ export class MeetingRoomPageComponent implements OnInit {
         prev = e
       if (e !== $event.target) {
         e.classList.remove('selected')
+        // @ts-ignore
+        e.parentNode.classList.remove('selected')
         return
       }
 
       e.classList.add('selected')
+      // @ts-ignore
+      setTimeout(() => e.parentNode.classList.add('selected'), 500)
 
       if (prev === e)
         return
@@ -133,5 +145,7 @@ export class MeetingRoomPageComponent implements OnInit {
           this.received = true
         })
     })
+
+    this.opened = false
   }
 }

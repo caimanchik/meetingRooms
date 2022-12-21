@@ -2,7 +2,11 @@
 <div class="room" [ngClass]="{received: received}">
   <div class="room__description">
     <div class="room__name">
-      <ul class="names">
+      <ul class="names" [ngClass]="{opened, busy, not_busy: !busy}">
+        <div class="names__arrows">
+          <span></span>
+          <span></span>
+        </div>
         <li class="name">
           <a class="name__link selected" href="" id="orange" (click)="selectRoom($event)">
             Оранжевая переговорка
@@ -61,8 +65,6 @@
       </div>
 
       <div class="calendar__meetings">
-<!--          [meetings]="meetings"-->
-<!--          [state]="states[selected]"-->
         <app-meeting></app-meeting>
       </div>
     </div>

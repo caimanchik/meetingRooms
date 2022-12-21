@@ -15,7 +15,7 @@
 
   &__state {
     height: 110px;
-    margin-top: 61px;
+    margin-top: 78px;
     animation: blinding1 2s infinite linear;
     border-radius: 11px;
 
@@ -38,6 +38,11 @@
     font-weight: 700;
     margin-bottom: 3px;
     text-transform: uppercase;
+  }
+
+  &__name {
+    position: relative;
+    height: 45px;
   }
 }
 
@@ -147,6 +152,89 @@
   }
 }
 
+.name {
+  background-color: transparent;
+  text-align: left;
+  position: relative;
+  &__link {
+    height: 0;
+    overflow: hidden;
+    transition: padding-bottom, padding-top ease .4s;
+    &.selected {
+      padding: 15px 58px 30px 15px;
+    }
+    background: inherit;
+    display: block;
+    &:visited, &:active {
+      background: inherit;
+      color: black;
+    }
+  }
+  &.selected {
+    order: -1;
+  }
+}
+
+.names {
+  &:after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 45px;
+    height: 1px;
+    width: 0;
+    transition: all ease .8s;
+  }
+  border: 1px solid black;
+  border-radius: 50px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 2;
+  transition: all ease .2s;
+
+  &.opened {
+    .name__link {
+      padding: 15px 58px 30px 15px;
+    }
+    border-radius: 11px;
+  }
+
+  &__arrows {
+    pointer-events: none;
+    position: absolute;
+    z-index: 3;
+    top: 24px;
+    left: 205px;
+    transition: all ease .4s;
+    & > span:nth-child(1) {
+      position: absolute;
+      transform: rotate(-135deg);
+      width: 14px;
+      height: 2px;
+      background-color: black;
+      display: block;
+      top: 0;
+      left: 0;
+    }
+    & > span:nth-child(2) {
+      position: absolute;
+      transform: rotate(-45deg);
+      width: 14px;
+      height: 2px;
+      background: black;
+      display: block;
+      top: 0;
+      left: 9px;
+    }
+  }
+}
+
 .received {
   .day__date {
     animation: none;
@@ -164,6 +252,38 @@
     background: linear-gradient(270deg, #FFC600 0%, rgba(255, 198, 0, 0) 100%), #97D700;
     &.busy {
       background: linear-gradient(270deg, #E0004D 0%, rgba(255, 198, 0, 0) 100%), #FF7500;
+    }
+  }
+
+  .names {
+    &.busy {
+      border-color: #FF7500;
+      .names__arrows > span:nth-child(1), .names__arrows > span:nth-child(2) {
+          background: linear-gradient(89.72deg, #E0004D 10.22%, #FF7500 91.08%);
+      }
+    }
+    &.not_busy {
+      border-color: #9BD601;
+      .names__arrows {
+        & > span:nth-child(1), & > span:nth-child(2) {
+          background: linear-gradient(89.72deg, #97D700 10.22%, #FFC600 91.08%);
+        }
+      }
+    }
+    &.opened {
+      &.busy:after {
+          width: 90%;
+          background-color: #FF7500;
+      }
+      &.not_busy:after {
+
+          width: 90%;
+          background-color: #9BD601;
+      }
+
+      .names__arrows {
+        transform: scaleY(-1);
+      }
     }
   }
 }
@@ -195,5 +315,4 @@
     right: 37px;
   }
 }
-
 
