@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/meeting-rooms/",
+    "public": "dist/meeting-rooms",
     "ignore": [
       "firebase.json",
       "**/.*",
