@@ -1,17 +1,12 @@
 import {
-  AfterContentInit,
+  OnDestroy,
   Component,
-  DoCheck,
-  EventEmitter,
-  Input,
-  OnChanges,
   OnInit,
-  Output,
-  SimpleChanges
 } from '@angular/core';
 import {Meeting} from "../../../../shared/interfaces";
 import {transition, trigger, useAnimation} from "@angular/animations";
 import {opacityTransitionAnim} from "../../../../shared/animations/opacityTransitionAnim";
+import {CalendarService} from "../../services/calendar.service";
 
 @Component({
   selector: 'app-meeting',
@@ -29,22 +24,25 @@ import {opacityTransitionAnim} from "../../../../shared/animations/opacityTransi
     ])
   ]
 })
-export class MeetingComponent implements OnInit, OnChanges{
-  @Input() meetings!: Meeting[]
-  @Input() state!: string
-  @Output() onBusy = new EventEmitter<number>()
-
+export class MeetingComponent implements OnInit, OnDestroy{
+  meetings!: Meeting[]
+  state!: string
   states: string[] = []
 
-  constructor() { }
+  constructor(
+    private calendarService: CalendarService
+  ) {
+    this.calendarService.meetings$.subscribe(m => {
+      this.meetings = m
+    })
+    this.calendarService.state$.subscribe(e => {
+      this.state = e
+      this.states = this.getStates()
+    })
+  }
 
   ngOnInit(): void {
 
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.states = this.getStates()
-    console.log(this.states)
   }
 
   private getStates(): string[] {
@@ -86,12 +84,16 @@ export class MeetingComponent implements OnInit, OnChanges{
         result.push('previous')
       else {
         result.push('now')
-        this.onBusy.emit(i)
+        this.calendarService.changeMeeting(i)
+        this.calendarService.changeBusy(true)
       }
-
     })
 
     return result
+  }
+
+  ngOnDestroy(): void {
+    this.calendarService.changeBusy(false)
   }
 
 }

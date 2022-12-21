@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
-import {delay, Observable, tap} from "rxjs";
+import {delay, Observable} from "rxjs";
 import {Room} from "../interfaces";
 
 @Injectable({
@@ -13,10 +13,10 @@ export class MeetingService {
     private http: HttpClient
   ) { }
 
-  getMeetings(): Observable<Room> {
-    return this.http.get<Room>(`${environment.fbUrl}.json`)
+  getMeetings(roomName: string): Observable<Room> {
+    return this.http.get<Room>(`${environment.fbUrl}/${roomName}.json`)
       .pipe(
-        delay(2000)
+        // delay(2000)
       )
   }
 }

@@ -2,9 +2,28 @@
 <div class="room" [ngClass]="{received: received}">
   <div class="room__description">
     <div class="room__name">
-      <h1 *ngIf="received">
-        {{ room.name }}
-      </h1>
+      <ul class="names">
+        <li class="name">
+          <a class="name__link selected" href="" id="orange" (click)="selectRoom($event)">
+            Оранжевая переговорка
+          </a>
+        </li>
+        <li class="name">
+          <a class="name__link" href="" id="green" (click)="selectRoom($event)">
+            Зелёная переговорка
+          </a>
+        </li>
+        <li class="name">
+          <a class="name__link" href="" id="red" (click)="selectRoom($event)">
+            Красная переговорка
+          </a>
+        </li>
+        <li class="name">
+          <a class="name__link" href="" id="yellow" (click)="selectRoom($event)">
+            Желтая переговорка
+          </a>
+        </li>
+      </ul>
     </div>
     <div class="room__state" [ngClass]="{busy: busy}">
       <div *ngIf="received" class="room__status" @opacity>
@@ -31,7 +50,7 @@
           <div @opacity class="day__name">{{dayName}}</div>
           <button
             class="day__date"
-            [ngClass]="{today: states[i] === 'today', previous: states[i] === 'previous', future: states[i] === 'future', selected: i == selected}"
+            [ngClass]="{today: states[i] === 'today', previous: states[i] === 'previous', future: states[i] === 'future', selected: i === selected}"
             (click)="changeMeetings(i)"
           >
             <div *ngIf="received" @opacity>
@@ -42,11 +61,9 @@
       </div>
 
       <div class="calendar__meetings">
-        <app-meeting
-          [meetings]="meetings"
-          [state]="states[selected]"
-          (onBusy)="updateRoomState($event)"
-        ></app-meeting>
+<!--          [meetings]="meetings"-->
+<!--          [state]="states[selected]"-->
+        <app-meeting></app-meeting>
       </div>
     </div>
     <div @opacity class="decor decor__1">
