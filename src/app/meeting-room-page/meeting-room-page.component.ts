@@ -4,6 +4,7 @@ import {Day, Meeting, Room} from "../shared/interfaces";
 import {transition, trigger, useAnimation} from "@angular/animations";
 import {opacityTransitionAnim} from "../shared/animations/opacityTransitionAnim";
 import {CalendarService} from "./shared/services/calendar.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-meeting-room-page',
@@ -33,6 +34,7 @@ export class MeetingRoomPageComponent implements OnInit {
   busy: boolean = false
   meeting!: Meeting
   opened = false
+  roomSub!: Subscription
 
   constructor(
     private meetService: MeetingService,
@@ -44,20 +46,39 @@ export class MeetingRoomPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.meetService.getMeetings('orange')
+    this.roomSub = this.meetService.getMeetings('orange')
       .subscribe((room: Room) => {
         this.parseRoom(room)
         this.received = true
       })
   }
 
-  parseRoom(room: Room): void {
+  private parseRoom(room: Room): void {
+    if (this.room != undefined && this.sameRooms(room))
+      return
+
     this.room = room
     this.days = this.room.calendar.map((day: Day) => new Date(day.date))
     this.initStates()
   }
 
-  initStates(): void {
+  private sameRooms(room: Room): boolean {
+    if (this.room.name !== room.name)
+      return false
+
+    let flag = true
+
+    room.calendar.forEach((value, index) => {
+      if (value.meetings.length != this.room.calendar[index].meetings.length) {
+        flag = false
+        return
+      }
+    })
+
+    return flag
+  }
+
+  private initStates(): void {
     let now = new Date()
 
     this.meetings = []
@@ -74,6 +95,11 @@ export class MeetingRoomPageComponent implements OnInit {
       }
     })
 
+    if (this.selected === 0) {
+      this.calendarService.changeMeetings(this.room.calendar[0].meetings)
+      this.meetings = this.room.calendar[0].meetings
+    }
+
     this.states = this.days.map(e => {
       return this.getState(e, now)
     })
@@ -82,6 +108,9 @@ export class MeetingRoomPageComponent implements OnInit {
   }
 
   private getState(current: Date, now: Date): string {
+
+    if (now.getFullYear() > current.getFullYear())
+      return 'previous'
 
     if (now.getMonth() > current.getMonth())
       return 'previous'
@@ -137,8 +166,9 @@ export class MeetingRoomPageComponent implements OnInit {
       this.states = []
       this.selected = -1
 
+      this.roomSub.unsubscribe()
       // @ts-ignore
-      this.meetService.getMeetings($event.target.id)
+      this.roomSub = this.meetService.getMeetings($event.target.id)
         .subscribe(room => {
           this.calendarService.changeBusy(false)
           this.parseRoom(room)

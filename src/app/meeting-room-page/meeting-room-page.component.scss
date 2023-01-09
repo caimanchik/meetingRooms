@@ -186,7 +186,7 @@
     width: 0;
     transition: all ease .8s;
   }
-  border: 1px solid black;
+  border: 1px solid #b0b0b0;
   border-radius: 50px;
   position: absolute;
   left: 50%;
@@ -217,7 +217,7 @@
       transform: rotate(-135deg);
       width: 14px;
       height: 2px;
-      background-color: black;
+      background-color: #b0b0b0;
       display: block;
       top: 0;
       left: 0;
@@ -227,7 +227,7 @@
       transform: rotate(-45deg);
       width: 14px;
       height: 2px;
-      background: black;
+      background: #b0b0b0;
       display: block;
       top: 0;
       left: 9px;
