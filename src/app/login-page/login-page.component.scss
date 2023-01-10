@@ -9,9 +9,11 @@
   max-width: 75vw;
   display: flex;
   gap: 27px;
+  align-items: center;
+  height: 228px;
   &__text {
     flex: 0 0 58%;
-    padding-top: 42px;
+    //padding-top: 42px;
   }
 
   &__header {

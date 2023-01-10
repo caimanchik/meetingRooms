@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {MeetingService} from "../shared/services/meeting.service";
 import {Day, Meeting, Room} from "../shared/interfaces";
 import {transition, trigger, useAnimation} from "@angular/animations";
@@ -22,7 +22,7 @@ import {Subscription} from "rxjs";
     ])
   ]
 })
-export class MeetingRoomPageComponent implements OnInit {
+export class MeetingRoomPageComponent implements OnInit, OnDestroy {
 
   daysNames = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
   received = false
@@ -178,4 +178,8 @@ export class MeetingRoomPageComponent implements OnInit {
 
     this.opened = false
   }
+
+    ngOnDestroy(): void {
+      this.roomSub.unsubscribe()
+    }
 }

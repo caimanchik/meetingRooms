@@ -10,13 +10,13 @@ import {Room} from "../interfaces";
 export class MeetingService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
   ) { }
 
   getMeetings(roomName: string): Observable<Room> {
-    return this.http.get<Room>(`${environment.fbUrl}/${roomName}.json`)
+    return this.http.get<Room>(`${environment.djangoUrl}${roomName}`)
       .pipe(
-        repeat({delay: 5000})
+        repeat({delay: 5000}),
       )
   }
 }

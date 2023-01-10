@@ -2,6 +2,5 @@ import {Environment} from "../app/shared/interfaces";
 
 export const environment: Environment = {
   production: false,
-  apiKey: 'AIzaSyApFTKFCPXMXz63T_IcrmTZh_dZ9s5x0Js',
-  fbUrl: 'https://testmeetingrooms-default-rtdb.firebaseio.com/'
+  djangoUrl: 'http://127.0.0.1:8000/api/v1/'
 };

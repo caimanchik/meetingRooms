@@ -1,19 +1,23 @@
-import { Injectable } from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {User} from "../interfaces";
-import {Observable} from "rxjs";
+import {Login} from "../interfaces";
+import {Observable, repeat} from "rxjs";
 import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnInit {
 
   constructor(private http: HttpClient) {}
 
-  login(user: User): Observable<any> {
-    return this.http.post(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.apiKey}`,
-      {...user, returnSecureToken: true})
+  ngOnInit(): void {
+  }
+
+  login(): Observable<Login> {
+    return this.http.get<Login>(`${environment.djangoUrl}login/`)
+        .pipe(
+            repeat({delay: 2000})
+        )
   }
 }

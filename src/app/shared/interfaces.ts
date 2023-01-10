@@ -1,12 +1,6 @@
 export type Environment = {
   production: boolean,
-  apiKey: string,
-  fbUrl: string
-}
-
-export type User = {
-  email: string,
-  password: string
+  djangoUrl: string
 }
 
 export type Meeting = {
@@ -25,3 +19,15 @@ export type Room = {
   name: string,
   calendar: Day[]
 }
+
+export type LoginFalse = {
+  hasToken: false,
+  link: string,
+  code: string
+}
+
+export type LoginTrue = {
+  hasToken: true
+}
+
+export type Login = LoginTrue | LoginFalse
