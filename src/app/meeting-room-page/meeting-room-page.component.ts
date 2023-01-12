@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {MeetingService} from "../shared/services/meeting.service";
-import {Day, Meeting, Room, RoomState} from "../shared/interfaces";
+import {Day, Room, RoomState} from "../shared/interfaces";
 import {transition, trigger, useAnimation} from "@angular/animations";
 import {opacityTransitionAnim} from "../shared/animations/opacityTransitionAnim";
 import {CalendarService} from "./shared/services/calendar.service";
@@ -25,17 +25,21 @@ import {Router} from "@angular/router";
 })
 export class MeetingRoomPageComponent implements OnInit, OnDestroy {
 
-  daysNames = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
-  received = false
-  room!: Room
-  days: Date[] = []
-  meetings: Meeting[] = []
-  states: string[] = []
-  selected!: number
-  meeting!: Meeting
-  opened = false
-  roomSub!: Subscription
-  roomState: RoomState = {occupied: false}
+  public daysNames = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
+  public received = false
+  public days!: Date[]
+  public states: string[] = []
+  public selected!: number
+  public opened = false
+  public roomState: RoomState = {occupied: false}
+
+  private room!: Room
+
+  private roomSub!: Subscription
+  private showSub!: Subscription
+  private dateStatesSub!: Subscription
+  private datesSub!: Subscription
+  private roomStateSub!: Subscription
 
   constructor(
     private meetService: MeetingService,
@@ -46,7 +50,7 @@ export class MeetingRoomPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.calendarService.canShow$.subscribe(value => this.received = value)
+    this.showSub = this.calendarService.canShow$.subscribe(value => this.received = value)
     this.roomSub = this.meetService.getMeetings('orange')
       .subscribe({
         next: (room: Room) => {
@@ -58,11 +62,11 @@ export class MeetingRoomPageComponent implements OnInit, OnDestroy {
         }
       })
 
-    this.calendarService.dateStates$.subscribe(states => {
+    this.dateStatesSub = this.calendarService.dateStates$.subscribe(states => {
       this.states = states
     })
-    this.calendarService.dates$.subscribe(value => this.days = value)
-    this.calendarService.roomState$.subscribe(value => this.roomState = value)
+    this.datesSub = this.calendarService.dates$.subscribe(value => this.days = value)
+    this.roomStateSub = this.calendarService.roomState$.subscribe(value => this.roomState = value)
 
     document.addEventListener('click', () => {
       this.opened = false
@@ -174,7 +178,12 @@ export class MeetingRoomPageComponent implements OnInit, OnDestroy {
     this.opened = false
   }
 
-    ngOnDestroy(): void {
-      this.roomSub.unsubscribe()
-    }
+  ngOnDestroy(): void {
+    this.roomSub.unsubscribe()
+    this.showSub.unsubscribe()
+    this.roomSub.unsubscribe()
+    this.dateStatesSub.unsubscribe()
+    this.datesSub.unsubscribe()
+    this.roomStateSub.unsubscribe()
+  }
 }

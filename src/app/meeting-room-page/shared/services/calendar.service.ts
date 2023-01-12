@@ -1,27 +1,28 @@
-import { Injectable } from '@angular/core';
-import {Observable, Subject} from "rxjs";
+import {Injectable, OnDestroy} from '@angular/core';
+import {Subject, Subscription} from "rxjs";
 import {Day, Meeting, Room, RoomState} from "../../../shared/interfaces";
 
 @Injectable({
   providedIn: 'root'
 })
-export class CalendarService {
-  meetings$ = new Subject<Meeting[]>()
-  dateStates$: Subject<string[]> = new Subject<string[]>()
-  dates$: Subject<Date[]> = new Subject<Date[]>()
-  canShow$: Subject<boolean> = new Subject<boolean>()
-  meetStates$: Subject<string[]> = new Subject<string[]>()
-  roomState$: Subject<RoomState> = new Subject<RoomState>()
+export class CalendarService implements OnDestroy{
+  public meetings$ = new Subject<Meeting[]>()
+  public dateStates$: Subject<string[]> = new Subject<string[]>()
+  public dates$: Subject<Date[]> = new Subject<Date[]>()
+  public canShow$: Subject<boolean> = new Subject<boolean>()
+  public meetStates$: Subject<string[]> = new Subject<string[]>()
+  public roomState$: Subject<RoomState> = new Subject<RoomState>()
 
-  statesInt!: NodeJS.Timer
-  update!: Observable<any>
-  selected: number = -1
+  private statesInt!: NodeJS.Timer
+  private selected: number = -1
+
+  private datesSub!: Subscription
 
   private room!: Room
   private dates!: Date[]
 
   constructor() {
-    this.dates$.subscribe(value => this.dates = value)
+    this.datesSub = this.dates$.subscribe(value => this.dates = value)
   }
 
   changeMeetings(meetings: Meeting[]) {
@@ -125,5 +126,9 @@ export class CalendarService {
       return 'previous'
     else
       return 'future'
+  }
+
+  ngOnDestroy(): void {
+    this.datesSub.unsubscribe()
   }
 }

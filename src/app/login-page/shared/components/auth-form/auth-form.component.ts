@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, state, style, transition, trigger, useAnimation} from "@angular/animations";
 import {opacityTransitionAnim} from "../../../../shared/animations/opacityTransitionAnim";
 import {AuthService} from "../../../../shared/services/auth-service";
 import {Router} from "@angular/router";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-auth-form',
@@ -43,7 +44,7 @@ import {Router} from "@angular/router";
     ])
   ]
 })
-export class AuthFormComponent implements OnInit {
+export class AuthFormComponent implements OnInit, OnDestroy {
   public visible: boolean = false
   public code: string = ''
   public link: string = ''
@@ -52,13 +53,15 @@ export class AuthFormComponent implements OnInit {
 
   private t!: NodeJS.Timeout
 
+  private loginSub!: Subscription
+
   constructor(
     private auth: AuthService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    let sub = this.auth.login().subscribe(value => {
+    this.loginSub = this.auth.login().subscribe(value => {
         if (!value.hasToken) {
             this.visible = true
             this.code = value.code
@@ -66,7 +69,7 @@ export class AuthFormComponent implements OnInit {
         }
          else {
             this.router.navigate(['meeting-room'])
-            sub.unsubscribe()
+            this.loginSub.unsubscribe()
         }
     })
   }
@@ -80,5 +83,9 @@ export class AuthFormComponent implements OnInit {
         setTimeout(() => this.dark = false, 100)
         this.t = setTimeout(() => this.copied = false, 1500)
       })
+  }
+
+  ngOnDestroy(): void {
+    this.loginSub.unsubscribe()
   }
 }

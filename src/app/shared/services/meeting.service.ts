@@ -16,7 +16,7 @@ export class MeetingService {
   getMeetings(roomName: string): Observable<Room> {
     return this.http.get<Room>(`${environment.djangoUrl}${roomName}`)
       .pipe(
-        repeat({delay: 5000})
+        repeat({delay: 6000})
       )
   }
 }
