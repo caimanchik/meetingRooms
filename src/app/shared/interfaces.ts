@@ -7,7 +7,7 @@ export type Meeting = {
   start: string,
   end: string,
   name: string,
-  phone: number
+  phone: string
 }
 
 export type Day = {
@@ -31,3 +31,17 @@ export type LoginTrue = {
 }
 
 export type Login = LoginTrue | LoginFalse
+
+export type RoomBusy = {
+  occupied: true,
+  name: string,
+  phone: string,
+  start: string,
+  end: string
+}
+
+export type RoomFree = {
+  occupied: false
+}
+
+export type RoomState = RoomBusy | RoomFree

@@ -2,7 +2,7 @@
 <div class="room" [ngClass]="{received: received}">
   <div class="room__description">
     <div class="room__name">
-      <ul class="names" [ngClass]="{opened, busy, not_busy: !busy}">
+      <ul class="names" [ngClass]="{opened, busy: roomState.occupied, not_busy: !roomState.occupied}">
         <div class="names__arrows">
           <span></span>
           <span></span>
@@ -29,19 +29,19 @@
         </li>
       </ul>
     </div>
-    <div class="room__state" [ngClass]="{busy: busy}">
+    <div class="room__state" [ngClass]="{busy: roomState.occupied}">
       <div *ngIf="received" class="room__status" @opacity>
-        {{ busy ? 'Занято' : 'Свободно' }}
+        {{ roomState.occupied ? 'Занято' : 'Свободно' }}
       </div>
-      <div *ngIf="busy" class="about" @opacity>
+      <div *ngIf="roomState.occupied && received" class="about" @opacity>
         <div class="about__name">
-          {{ meeting.name }}
+          {{ roomState.name }}
         </div>
         <div class="about__phone">
-          {{ meeting.phone }}
+          {{ roomState.phone }}
         </div>
         <div class="about__time">
-          {{ meeting.start }}-{{ meeting.end }}
+          {{ roomState.start }}-{{ roomState.end }}
         </div>
       </div>
     </div>

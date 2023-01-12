@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from msal import PublicClientApplication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import requests
@@ -8,7 +9,7 @@ from .models import Config, Calendars
 config = Config()
 calendars = Calendars()
 config.FLOW['expires_at'] = 0
-config.FLOW['expires_in'] = 10 ** 100
+config.FLOW['expires_in'] = 10 ** 1000
 
 
 class Login(APIView):
@@ -55,6 +56,8 @@ class Yellow(APIView):
 
 
 def get_calendar(room):
+    if not Login.is_logged:
+        return {'isLogged': False}
     context = get_calendar_this_week({
         'Authorization': 'Bearer ' + config.ACCESS_TOKEN,
         'Prefer': 'outlook.timezone="Asia/Yekaterinburg"'},
@@ -82,7 +85,7 @@ def get_calendar_this_week(headers, room=calendars.orange):
     end_datetime = now + timedelta(days=7 - weak_day)
     room_id = room['id']
     response = requests.get(
-        f"https://graph.microsoft.com/v1.0/me/calendars/{room_id}/calendarView?startdatetime={start_datatime.isoformat()}&enddatetime={end_datetime.isoformat()}",
+        f"https://graph.microsoft.com/v1.0/me/calendars/{room_id}/calendarView?startdatetime={start_datatime.isoformat()}&enddatetime={end_datetime.isoformat()}&$top=1000",
         headers=headers)
     return get_output_dict(response.json(), start_datatime, room)
 
@@ -93,6 +96,18 @@ def get_output_dict(content, start_datatime, room):
         current_day = start_datatime + timedelta(days=i)
         current_day_str = str(current_day).partition(' ')[0]
         meetings = []
+        try:
+            content["value"]
+        except KeyError:
+            Login.is_logged = False
+            global calendars
+            config.APP = PublicClientApplication(client_id=config.CLIENT_ID, authority=config.AUTHORITY)
+            config.FLOW = config.APP.initiate_device_flow(scopes=config.SCOPE)
+            calendars = Calendars()
+            config.FLOW['expires_at'] = 0
+            config.FLOW['expires_in'] = 10 ** 1000
+            print(content)
+
         for value in content["value"]:
             current_start = value["start"]["dateTime"].partition('T')
             current_start_day = current_start[0]

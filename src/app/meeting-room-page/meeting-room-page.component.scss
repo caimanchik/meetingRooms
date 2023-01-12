@@ -123,32 +123,32 @@
       padding-top: 2px;
     }
 
-    &.previous > div {
-      border-color: #7D7D7D;
-      color: #7D7D7D;
-    }
-
-    &.selected {
-      border: none;
-      & > div {
-        color: white;
-        background-color: #FF7500;
-      }
-    }
-
-    &.today {
-      border-color: #97D700;
-      & > div {
-        color: #97D700;
-        background-color: transparent;
-      }
-      &.selected {
-        & > div {
-          color: white;
-          background-color: #97D700;
-        }
-      }
-    }
+    //&.previous > div {
+    //  border-color: #7D7D7D;
+    //  color: #7D7D7D;
+    //}
+    //
+    //&.selected {
+    //  border: none;
+    //  & > div {
+    //    color: white;
+    //    background-color: #FF7500;
+    //  }
+    //}
+    //
+    //&.today {
+    //  border-color: #97D700;
+    //  & > div {
+    //    color: #97D700;
+    //    background-color: transparent;
+    //  }
+    //  &.selected {
+    //    & > div {
+    //      color: white;
+    //      background-color: #97D700;
+    //    }
+    //  }
+    //}
   }
 }
 
@@ -241,6 +241,33 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &.previous > div {
+      border-color: #7D7D7D;
+      color: #7D7D7D;
+    }
+
+    &.selected {
+      border: none;
+      & > div {
+        color: white;
+        background-color: #FF7500;
+      }
+    }
+
+    &.today {
+      border-color: #97D700;
+      & > div {
+        color: #97D700;
+        background-color: transparent;
+      }
+      &.selected {
+        & > div {
+          color: white;
+          background-color: #97D700;
+        }
+      }
+    }
   }
   .calendar__meetings {
     animation: none;

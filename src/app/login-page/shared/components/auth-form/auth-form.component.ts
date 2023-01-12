@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {transition, trigger, useAnimation} from "@angular/animations";
+import {Component, OnInit} from '@angular/core';
+import {animate, state, style, transition, trigger, useAnimation} from "@angular/animations";
 import {opacityTransitionAnim} from "../../../../shared/animations/opacityTransitionAnim";
 import {AuthService} from "../../../../shared/services/auth-service";
 import {Router} from "@angular/router";
@@ -17,14 +17,40 @@ import {Router} from "@angular/router";
           timing: '0.5s ease'
         }
       }))
+    ]),
+    trigger('copy', [
+      state('invisible', style({
+        transform: 'translateY(100px)'
+      })),
+      state('visible', style({
+        transform: 'translateY(0px)',
+        opacity: 1
+      })),
+      transition('invisible <-> visible', [
+        animate('0.3s ease')
+      ])
+    ]),
+    trigger('copyBg', [
+      state('dark', style({
+        backgroundColor: '#e7e7e7'
+      })),
+      state('light', style({
+        transform: '#F5F5F5',
+      })),
+      transition('dark <-> light', [
+        animate('0.1s ease')
+      ])
     ])
   ]
 })
 export class AuthFormComponent implements OnInit {
-
   public visible: boolean = false
   public code: string = ''
   public link: string = ''
+  public copied: boolean = false
+  public dark: boolean = false
+
+  private t!: NodeJS.Timeout
 
   constructor(
     private auth: AuthService,
@@ -43,5 +69,16 @@ export class AuthFormComponent implements OnInit {
             sub.unsubscribe()
         }
     })
+  }
+
+  copyCode() {
+    navigator.clipboard.writeText(this.code)
+      .then(() => {
+        this.copied = true
+        clearTimeout(this.t)
+        this.dark = true
+        setTimeout(() => this.dark = false, 100)
+        this.t = setTimeout(() => this.copied = false, 1500)
+      })
   }
 }

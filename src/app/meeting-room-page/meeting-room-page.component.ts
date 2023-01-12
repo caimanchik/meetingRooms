@@ -1,10 +1,11 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {MeetingService} from "../shared/services/meeting.service";
-import {Day, Meeting, Room} from "../shared/interfaces";
+import {Day, Meeting, Room, RoomState} from "../shared/interfaces";
 import {transition, trigger, useAnimation} from "@angular/animations";
 import {opacityTransitionAnim} from "../shared/animations/opacityTransitionAnim";
 import {CalendarService} from "./shared/services/calendar.service";
 import {Subscription} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-meeting-room-page',
@@ -31,111 +32,101 @@ export class MeetingRoomPageComponent implements OnInit, OnDestroy {
   meetings: Meeting[] = []
   states: string[] = []
   selected!: number
-  busy: boolean = false
   meeting!: Meeting
   opened = false
   roomSub!: Subscription
+  roomState: RoomState = {occupied: false}
 
   constructor(
     private meetService: MeetingService,
     private cdRef: ChangeDetectorRef,
-    private calendarService: CalendarService
+    private calendarService: CalendarService,
+    private router: Router
   ) {
-    this.calendarService.busy$.subscribe(s => this.busy = s)
-    this.calendarService.meetingIndex$.subscribe(i => this.meeting = this.meetings[i])
   }
 
   ngOnInit(): void {
+    this.calendarService.canShow$.subscribe(value => this.received = value)
     this.roomSub = this.meetService.getMeetings('orange')
-      .subscribe((room: Room) => {
-        this.parseRoom(room)
-        this.received = true
+      .subscribe({
+        next: (room: Room) => {
+          this.calendarService.changeRoom(room)
+          this.parseRoom2(room)
+        },
+        error: () => {
+          this.router.navigate([''])
+        }
       })
+
+    this.calendarService.dateStates$.subscribe(states => {
+      this.states = states
+    })
+    this.calendarService.dates$.subscribe(value => this.days = value)
+    this.calendarService.roomState$.subscribe(value => this.roomState = value)
+
+    document.addEventListener('click', () => {
+      this.opened = false
+    })
   }
 
-  private parseRoom(room: Room): void {
-    if (this.room != undefined && this.sameRooms(room))
-      return
+  private parseRoom2(room: Room): void {
+    if (this.room != undefined) {
+      if (this.room.name !== room.name)
+        this.selected = 0
+      else if (!this.sameMeets(room))
+        return
+    } else
+      this.selected = 0
 
     this.room = room
-    this.days = this.room.calendar.map((day: Day) => new Date(day.date))
-    this.initStates()
-  }
 
-  private sameRooms(room: Room): boolean {
-    if (this.room.name !== room.name)
-      return false
-
-    let flag = true
-
-    room.calendar.forEach((value, index) => {
-      if (value.meetings.length != this.room.calendar[index].meetings.length) {
-        flag = false
-        return
-      }
-    })
-
-    return flag
-  }
-
-  private initStates(): void {
     let now = new Date()
-
-    this.meetings = []
-    this.selected = 0
 
     this.room.calendar.forEach((e: Day, i) => {
       let day = new Date(e.date)
       if (now.getDate() == day.getDate()
         && now.getMonth() == day.getMonth()
+        && now.getFullYear() == day.getFullYear()
       ) {
         this.selected = i
-        this.calendarService.changeMeetings(e.meetings)
-        this.meetings = e.meetings
       }
     })
 
-    if (this.selected === 0) {
-      this.calendarService.changeMeetings(this.room.calendar[0].meetings)
-      this.meetings = this.room.calendar[0].meetings
-    }
-
-    this.states = this.days.map(e => {
-      return this.getState(e, now)
-    })
-
-    this.calendarService.changeState(this.states[this.selected])
+    this.calendarService.changeSelected(this.selected)
   }
 
-  private getState(current: Date, now: Date): string {
+  private sameMeets(room: Room): boolean {
+    let flag = true
 
-    if (now.getFullYear() > current.getFullYear())
-      return 'previous'
+    room.calendar.forEach((value, index) => {
+      let nowMeets = this.room.calendar[index].meetings
+      if (!flag)
+        return
+      value.meetings.forEach((e, j) => {
+        if (!flag)
+          return
 
-    if (now.getMonth() > current.getMonth())
-      return 'previous'
+        if (
+          !(e.start === nowMeets[j].start
+          && e.start === nowMeets[j].end
+          && e.phone === nowMeets[j].phone
+          && e.name === nowMeets[j].name)
+        )
+          flag = false
+      })
+    })
 
-    if (now.getMonth() < current.getMonth()) {
-      return 'future'
-    }
-
-    if (now.getDate() === current.getDate())
-      return 'today'
-    else if (now.getDate() > current.getDate())
-      return 'previous'
-    else
-      return 'future'
+    return flag
   }
 
   changeMeetings(i: number) {
-    this.calendarService.changeMeetings(this.room.calendar[i].meetings)
-    this.meetings = this.room.calendar[i].meetings
     this.selected = i
-    this.calendarService.changeState(this.states[this.selected])
+    this.calendarService.changeSelected(i)
   }
 
   selectRoom($event: MouseEvent) {
     $event.preventDefault()
+    $event.stopPropagation()
 
     if (!this.opened)
     {
@@ -163,17 +154,21 @@ export class MeetingRoomPageComponent implements OnInit, OnDestroy {
         return
 
       this.received = false
-      this.states = []
-      this.selected = -1
+      this.calendarService.changeMeetings([])
 
       this.roomSub.unsubscribe()
       // @ts-ignore
       this.roomSub = this.meetService.getMeetings($event.target.id)
-        .subscribe(room => {
-          this.calendarService.changeBusy(false)
-          this.parseRoom(room)
-          this.received = true
-        })
+        .subscribe({
+          next: room => {
+            this.calendarService.changeRoom(room)
+            this.parseRoom2(room)
+          },
+          error: () => {
+            this.router.navigate([''])
+          }
+        }
+    )
     })
 
     this.opened = false

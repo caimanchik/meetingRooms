@@ -1,5 +1,5 @@
 <div class="login" *ngIf="visible; else loading" @pass>
-    <div class="code">
+    <div class="code" (click)="copyCode()" [@copyBg] = "dark ? 'dark' : 'light'">
         <div class="code-wrap">
             {{ code }}
         </div>
@@ -10,8 +10,18 @@
         </div>
     </div>
     <a [href]="link" target="_blank" class="redirect">
-    <span class="redirect-text" *ngIf="visible">Предоставить доступ</span>
+        <span class="redirect-text" *ngIf="visible">Предоставить доступ</span>
     </a>
+</div>
+
+<div class="copied"
+     [@copy] = "copied ? 'visible' : 'invisible'"
+>
+    <div class="copied-wrap">
+        <div class="copied-text">
+            Код скопирован в буфер обмена
+        </div>
+    </div>
 </div>
 
 <ng-template #loading>
