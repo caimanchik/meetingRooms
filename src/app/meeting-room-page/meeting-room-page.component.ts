@@ -76,26 +76,27 @@ export class MeetingRoomPageComponent implements OnInit, OnDestroy {
   private parseRoom2(room: Room): void {
     if (this.room != undefined) {
       if (this.room.name !== room.name)
-        this.selected = 0
-      else if (!this.sameMeets(room))
+        this.selected = -1
+      else if (this.sameMeets(room))
         return
     } else
-      this.selected = 0
+      this.selected = -1
 
     this.room = room
 
-    let now = new Date()
+    if (this.selected === -1) {
+      let now = new Date()
+      this.room.calendar.forEach((e: Day, i) => {
+        let day = new Date(e.date)
+        if (now.getDate() == day.getDate()
+          && now.getMonth() == day.getMonth()
+          && now.getFullYear() == day.getFullYear()
+        ) {
+          this.selected = i
+        }
+      })
 
-    this.room.calendar.forEach((e: Day, i) => {
-      let day = new Date(e.date)
-      if (now.getDate() == day.getDate()
-        && now.getMonth() == day.getMonth()
-        && now.getFullYear() == day.getFullYear()
-      ) {
-        this.selected = i
-      }
-    })
-
+    }
     this.calendarService.changeSelected(this.selected)
   }
 
@@ -104,6 +105,10 @@ export class MeetingRoomPageComponent implements OnInit, OnDestroy {
 
     room.calendar.forEach((value, index) => {
       let nowMeets = this.room.calendar[index].meetings
+
+      if (value.meetings.length !== nowMeets.length)
+        flag = false
+
       if (!flag)
         return
       value.meetings.forEach((e, j) => {
@@ -111,12 +116,13 @@ export class MeetingRoomPageComponent implements OnInit, OnDestroy {
           return
 
         if (
-          !(e.start === nowMeets[j].start
-          && e.start === nowMeets[j].end
-          && e.phone === nowMeets[j].phone
-          && e.name === nowMeets[j].name)
-        )
+          e.start !== nowMeets[j].start
+          || e.start !== nowMeets[j].start
+          || e.phone !== nowMeets[j].phone
+          || e.name !== nowMeets[j].name
+        ) {
           flag = false
+        }
       })
     })
 
